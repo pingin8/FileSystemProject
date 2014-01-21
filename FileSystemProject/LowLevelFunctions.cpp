@@ -101,7 +101,6 @@ void WriteBitmap()
 	SetFilePointer(file, pos, NULL, FILE_BEGIN);
 }
 
-
 uint FileCreate(char name[MAX_FILENAME_LENGTH], uchar type, uint parentId){return 0;}
 bool FileDelete(uint id){return 0;}
 void WriteToFile(uint id, char * data, uint size){}
