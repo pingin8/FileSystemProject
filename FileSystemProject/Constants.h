@@ -12,5 +12,6 @@ typedef unsigned int uint;
 #define FILETYPE_FILE 1
 #define FILETYPE_DIR 2
 
+//жопа
 
 #endif CONSTANTS_H
