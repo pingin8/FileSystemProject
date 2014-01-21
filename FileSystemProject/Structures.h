@@ -5,11 +5,11 @@
 
 struct Cluster
 {
+	uchar Data[MAX_CLUSTER_DATA_SIZE];
 	ushort Offset;
 	ushort Next;
 	ushort Prev;
 	ushort Size;
-	uchar Data[MAX_CLUSTER_DATA_SIZE];
 };
 
 struct FileInfo 

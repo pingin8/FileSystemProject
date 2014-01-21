@@ -15,6 +15,12 @@ void FreeCluster(ushort offset);
 void WriteBitmap();
 uint CalculateFreeSpace();
 
+uint FindEmptyInfoId(uint dir);
+void WriteInfo(FileInfo * fileinfo);
+Cluster * ReadCluster(ushort offset);
+void WriteCluster(Cluster * cluster);
+Cluster * ReadNextCluster(Cluster * cluster);
+
 uint FileCreate(char name[MAX_FILENAME_LENGTH], uchar type, uint parentId);
 bool FileDelete(uint id);
 void WriteToFile(uint id, char * data, uint size);

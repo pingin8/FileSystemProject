@@ -12,6 +12,9 @@ typedef unsigned long ulong;
 #define FILETYPE_EMPTY 0
 #define FILETYPE_FILE 1
 #define FILETYPE_DIR 2
+
+#define ROOT_DIR 8192
+
 #define null NULL
 
 #endif CONSTANTS_H

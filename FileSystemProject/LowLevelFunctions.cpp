@@ -6,9 +6,12 @@ uchar bitmap[8192];
 int main() // test main
 {
 	InitializeFileSystem();
-	FormatFileSystem();
-	CloseFileSystem();
+	//FormatFileSystem();
+	//FileCreate("testfile2i", FILETYPE_FILE, ROOT_DIR);
 	
+	//FreeCluster(10);
+	CloseFileSystem();
+
 	return 0;
 }
 
@@ -31,8 +34,9 @@ void FormatFileSystem()
 	uchar data[8192];
 	ZeroMemory(data, 8192);
 	data[0] = 0xFF;
+	data[1] = 0x80;
 	WriteFile(file, data, 8192, &lp, null);
-	data[0] = 0;
+	data[0]= data[1] = 0;
 	for (int i = 0; i < 8191; i++)
 	{
 		WriteFile(file, data, 8192, &lp, null);
@@ -101,12 +105,125 @@ void WriteBitmap()
 	SetFilePointer(file, pos, NULL, FILE_BEGIN);
 }
 
-uint FileCreate(char name[MAX_FILENAME_LENGTH], uchar type, uint parentId){return 0;}
+
+
+
+uint FileCreate(char name[MAX_FILENAME_LENGTH], uchar type, uint parentId)
+{
+	FileInfo * fileinfo = new FileInfo;
+	fileinfo->Size = 0;
+	fileinfo->Parent = parentId;
+	fileinfo->Type = type;
+	fileinfo->Cluster = 0;
+	memmove(fileinfo->Name, name, MAX_FILENAME_LENGTH);
+	fileinfo->Id = FindEmptyInfoId(parentId);
+	WriteInfo(fileinfo);
+	return fileinfo->Id;
+}
+
+uint FindEmptyInfoId(uint dir)
+{
+	ushort offset = ((dir == ROOT_DIR )
+		? ROOT_DIR / 1024
+		: GetInfoById(dir)->Cluster);
+	Cluster * cluster = ReadCluster(offset);
+	FileInfo * info = new FileInfo;
+	ulong lp = 0;
+	int i = 0;
+	bool found = false;
+	ulong pos = SetFilePointer(file, 0, null, FILE_CURRENT);
+	SetFilePointer(file, offset * 1024, null, FILE_BEGIN);
+	while (!found)
+	{
+		for (; i < MAX_CLUSTER_DATA_SIZE && !found; i += sizeof(FileInfo))
+		{
+			ReadFile(file, info, sizeof(FileInfo), &lp, null);
+			if (info->Type == FILETYPE_EMPTY)
+			{
+				found = true;				
+			}
+		}
+		if (!found)
+		{
+			cluster = ReadNextCluster(cluster);		
+			SetFilePointer(file, cluster->Offset * 1024, null, FILE_BEGIN);
+			i = 0;
+		}
+	}
+	SetFilePointer(file, pos, null, FILE_BEGIN);
+	return cluster->Offset * 1024 + i - sizeof(FileInfo);
+}
+
+Cluster * ReadCluster(ushort offset)
+{
+	ulong pos = SetFilePointer(file, 0, null, FILE_CURRENT);
+	SetFilePointer(file, offset * 1024, null, FILE_BEGIN);
+	ulong lp;
+	Cluster * cluster = new Cluster;
+	ReadFile(file, cluster, sizeof(Cluster), &lp, null);
+	SetFilePointer(file, pos, null, FILE_BEGIN);
+	if (!cluster->Offset)
+	{
+		cluster->Offset = offset;
+	}
+	return cluster;
+}
+
+void WriteCluster(Cluster * cluster)
+{
+	ulong pos = SetFilePointer(file, 0, null, FILE_CURRENT);
+	SetFilePointer(file, cluster->Offset * 1024, null, FILE_BEGIN);
+	ulong lp;
+	WriteFile(file, cluster, sizeof(Cluster), &lp, null);
+	SetFilePointer(file, pos, null, FILE_BEGIN);
+}
+
+Cluster * ReadNextCluster(Cluster * cluster)
+{
+	ushort next = cluster->Next;
+	if (!next)
+	{
+		next = FindEmptyCluster();
+		TakeCluster(next);
+		cluster->Next = next;
+		WriteCluster(cluster);
+		delete cluster;
+		cluster = new Cluster;
+		ZeroMemory(cluster, sizeof(Cluster));
+		cluster->Offset = next;	
+		return cluster;
+	}
+	delete cluster;
+	return ReadCluster(next);
+}
+
+void WriteInfo(FileInfo * fileinfo)
+{
+	ulong pos = SetFilePointer(file, 0, null, FILE_CURRENT);
+	SetFilePointer(file, fileinfo->Id, null, FILE_BEGIN);
+	ulong lp = 0;
+	WriteFile(file, fileinfo, sizeof(FileInfo), &lp, null);
+	SetFilePointer(file, pos, null, FILE_BEGIN);
+}
+
 bool FileDelete(uint id){return 0;}
 void WriteToFile(uint id, char * data, uint size){}
 void ReadFromFile(uint id, char * buffer){}
 void FileCopy(uint fileId, uint dir){}
 void FileMove(uint fileId, uint dir){}
 
-FileInfo * GetInfoById(uint id){return 0;}
-uint GetIdByName(char name[MAX_FILENAME_LENGTH], uint dir){return 0;}
+FileInfo * GetInfoById(uint id)
+{	
+	FileInfo * info = new FileInfo;
+	ulong lp = 0;
+	ulong pos = SetFilePointer(file, 0, null, FILE_CURRENT);
+	SetFilePointer(file, id, null, FILE_BEGIN);
+	ReadFile(file, info, sizeof(FileInfo), &lp, null);
+	SetFilePointer(file, pos, null, FILE_BEGIN);
+	return info;
+}
+
+uint GetIdByName(char name[MAX_FILENAME_LENGTH], uint dir)
+{
+	return 0;
+}
