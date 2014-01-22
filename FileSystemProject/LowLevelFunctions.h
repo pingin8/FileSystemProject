@@ -23,6 +23,8 @@ Cluster * ReadNextCluster(Cluster * cluster);
 
 uint FileCreate(char name[MAX_FILENAME_LENGTH], uchar type, uint parentId);
 bool FileDelete(uint id);
+void DeleteData(ushort offset);
+
 void WriteToFile(uint id, char * data, uint size);
 void ReadFromFile(uint id, char * buffer);
 void FileCopy(uint fileId, uint dir);
