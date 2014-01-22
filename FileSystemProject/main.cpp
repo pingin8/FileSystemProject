@@ -1,5 +1,6 @@
 #include "Constants.h"
 #include "LowLevelFunctions.h"
+#include "HighLevelFunctions.h"
 #include "Structures.h"
 #include "commands.h"
 #include <iostream>
@@ -48,36 +49,30 @@ int main()
 		case 1:{	
 					if(nWords < 2)
 						break;
-					/*пустота*/		break;}
+					EnterDir(words[1]);		break;}
 
-		case 2:{	/*пустота*/				break;}
+		case 2:{	LeaveDir();				break;}
 		case 3:{
 					if(nWords < 2)
 						break;
-					/*пустота*/	break;}
+					FileDeleteHigh(words[1]);	break;}
 		case 4:{
 					if(nWords < 2)
 						break;
-					/*пустота*/	break;}
+					DirDeleteHigh(words[1]);	break;}
 		case 5:{	
 					if(nWords < 2)
-						/*пустота*/;
-					else
-						/*пустота*/;
-													break;}
+						ViewCurrentDirectory();		break;}
 		case 6:{	HELPCOM();						break;}
-		case 7:{	/*пустота*/;				break;}
+		case 7:{		About();		break;}
 		case 8:{	
 					if(nWords < 2)
 						break;
-					/*пустота*/;
-					/*пустота*/;	
-													break;}
+					FileCreateHigh(path, words[1]); break;}
 		case 9:{	
 					if(nWords < 2)
 						break;
-					/*пустота*/;
-					/*пустота*/;	
+					DirCreateHigh(path, words[1]);
 													break;}
 		case 10:{	
 					if(nWords < 3)
