@@ -84,6 +84,7 @@
     <ClInclude Include="Structures.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Commands.cpp" />
     <ClCompile Include="LowLevelFunctions.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
