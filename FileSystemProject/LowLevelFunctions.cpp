@@ -4,7 +4,7 @@ HANDLE file;
 uchar bitmap[8192];
 
 //test
-
+/*
 int main() // test main
 {
 	InitializeFileSystem();
@@ -16,7 +16,7 @@ int main() // test main
 
 	return 0;
 }
-
+*/
 void InitializeFileSystem()
 {
 	file = CreateFile("FileSystem", FILE_READ_DATA | FILE_WRITE_DATA,
