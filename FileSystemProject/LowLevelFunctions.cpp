@@ -134,6 +134,15 @@ uint FindEmptyInfoId(uint dir)
 	ushort offset = ((dir == ROOT_DIR )
 		? ROOT_DIR / 1024
 		: GetInfoById(dir)->Cluster);
+	if (!offset)
+	{
+		offset = FindEmptyCluster();
+		TakeCluster(offset);
+		FileInfo * info = GetInfoById(dir);
+		info->Cluster = offset;
+		WriteInfo(info);
+		delete info;
+	}
 	Cluster * cluster = ReadCluster(offset);
 	FileInfo * info = new FileInfo;
 	ulong lp = 0;
@@ -222,6 +231,17 @@ void WriteInfo(FileInfo * fileinfo)
 bool FileDelete(uint id)
 {
 	FileInfo * info = GetInfoById(id);
+	if (info->Type == FILETYPE_DIR)
+	{
+		uint count = 0;
+		FileInfo ** infos = GetFileList(info->Id, &count);
+		for (uint i = 0; i < count; i++)
+		{
+			FileDelete(infos[i]->Id);
+			delete infos[i];
+		}
+		delete[] infos;
+	}
 	ushort offset = info->Cluster;
 	Cluster * cluster = ReadCluster(id / 1024);
 	cluster->Size -= sizeof(FileInfo);
@@ -237,9 +257,12 @@ bool FileDelete(uint id)
 			WriteCluster(cluster);
 		}
 	}
+	if (info->Type == FILETYPE_FILE)
+	{
+		DeleteData(offset);
+	}
 	info->Type = FILETYPE_EMPTY;
 	WriteInfo(info);
-	DeleteData(offset);
 	return true;
 }
 
@@ -314,8 +337,52 @@ void ReadFromFile(uint id, char * buffer, uint * size)
 	}
 }
 
-void FileCopy(uint fileId, uint dir){}
-void FileMove(uint fileId, uint dir){}
+void FileCopy(uint fileId, uint dir)
+{
+	FileInfo * info = GetInfoById(fileId);
+	uint id = FileCreate(info->Name, info->Type, dir);
+	char * buffer = new char[info->Size];
+	if (info->Type == FILETYPE_FILE)
+	{
+		FileInfo * newinfo = GetInfoById(id);
+		ReadFromFile(info->Id, buffer, &newinfo->Size);
+		WriteToFile(newinfo->Id, buffer, newinfo->Size);
+		delete newinfo;
+	}
+	if (info->Type == FILETYPE_DIR)
+	{
+		uint count = 0;
+		FileInfo ** infos = GetFileList(info->Id, &count);
+		for (uint i = 0; i < count; i++)
+		{
+			FileCopy(infos[i]->Id, info->Id);
+			delete infos[i];
+		}
+		delete[] infos;
+	}
+}
+
+void FileMove(uint fileId, uint dir)
+{
+	FileInfo * info = GetInfoById(fileId);
+	uint id = FileCreate(info->Name, info->Type, dir);
+	FileInfo * newinfo = GetInfoById(id);
+	newinfo->Cluster = info->Cluster;
+	newinfo->Size = info->Size;
+	WriteInfo(newinfo);
+	delete newinfo;
+	if (info->Type == FILETYPE_DIR)
+	{
+		uint count = 0;
+		FileInfo ** infos = GetFileList(info->Id, &count);
+		for (uint i = 0; i < count; i++)
+		{
+			FileMove(infos[i]->Id, info->Id);
+			delete infos[i];
+		}
+		delete[] infos;
+	}
+}
 
 FileInfo * GetInfoById(uint id)
 {	
@@ -326,6 +393,46 @@ FileInfo * GetInfoById(uint id)
 	ReadFile(file, info, sizeof(FileInfo), &lp, null);
 	SetFilePointer(file, pos, null, FILE_BEGIN);
 	return info;
+}
+
+FileInfo ** GetFileList(uint dir, uint * count)
+{
+	FileInfo * info = GetInfoById(dir);
+	if (!info->Cluster)
+	{
+		*count = 0;
+		return null;
+	}
+	vector<FileInfo *> infos;
+	Cluster * cluster = ReadCluster(info->Cluster);
+	delete info;
+	while (true)
+	{	
+		ulong lp = 0;
+		for (int i = 0; i < MAX_CLUSTER_DATA_SIZE - sizeof(FileInfo); i += sizeof(FileInfo))
+		{
+			ReadFile(file, info, sizeof(FileInfo), &lp, null);
+			if (info->Type != FILETYPE_EMPTY)
+			{
+				infos.push_back(info);
+			}
+		}
+		if (cluster->Next)
+		{
+			cluster = ReadNextCluster(cluster);
+		}
+		else
+		{
+			break;
+		}
+	}
+	*count = infos.size();
+	FileInfo ** result = new FileInfo*[infos.size()];
+	for (int i = 0; i < infos.size(); i++)
+	{
+		result[i] = infos[i];
+	}
+	return result;
 }
 
 uint GetIdByName(char name[MAX_FILENAME_LENGTH], uint dir)

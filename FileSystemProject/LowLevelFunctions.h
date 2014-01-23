@@ -3,6 +3,9 @@
 
 #include "Structures.h"
 #include <Windows.h>
+#include <vector>
+
+using namespace std;
 
 void InitializeFileSystem();
 void FormatFileSystem();
@@ -33,8 +36,7 @@ void FileMove(uint fileId, uint dir);
 FileInfo * GetInfoById(uint id);
 uint GetIdByName(char name[MAX_FILENAME_LENGTH], uint dir);
 
-
-
+FileInfo ** GetFileList(uint dir, uint * count);
 
 
 
