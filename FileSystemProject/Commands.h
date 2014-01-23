@@ -14,6 +14,7 @@
 
 using namespace std;
 
+
 char**		FindWordsInStr(char *InputStr, int *nWordRet);
 int			GetCommandNumber(char *Com);
 char*		ShowPath(vector<uint> path_vector);

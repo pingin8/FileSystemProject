@@ -49,30 +49,30 @@ int main()
 		case 1:{	
 					if(nWords < 2)
 						break;
-					EnterDir(words[1]);		break;}
+					EnterDir(&path, words[1]);		break;}
 
-		case 2:{	LeaveDir();				break;}
+		case 2:{	LeaveDir(&path);				break;}
 		case 3:{
 					if(nWords < 2)
 						break;
-					FileDeleteHigh(words[1]);	break;}
+					FileDeleteHigh(&path, words[1]);	break;}
 		case 4:{
 					if(nWords < 2)
 						break;
-					DirDeleteHigh(words[1]);	break;}
+					DirDeleteHigh(&path, words[1]);	break;}
 		case 5:{	
 					if(nWords < 2)
-						ViewCurrentDirectory();		break;}
+						ViewCurrentDirectory(&path);		break;}
 		case 6:{	HELPCOM();						break;}
 		case 7:{		About();		break;}
 		case 8:{	
 					if(nWords < 2)
 						break;
-					FileCreateHigh(path, words[1]); break;}
+					FileCreateHigh(&path, words[1]); break;}
 		case 9:{	
 					if(nWords < 2)
 						break;
-					DirCreateHigh(path, words[1]);
+					DirCreateHigh(&path, words[1]);
 													break;}
 		case 10:{	
 					if(nWords < 3)

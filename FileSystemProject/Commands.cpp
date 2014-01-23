@@ -1,5 +1,6 @@
-#include "Commands.h"
+#define _CRT_SECURE_NO_WARNINGS
 
+#include "Commands.h"
 
 char com1[] = "cd";
 char com2[] = "cd..";
@@ -16,10 +17,7 @@ char com12[] = "wf";
 char com13[] = "format";
 char com14[] = "sysinfo";
 char com15[] = "exit";
-char com16[] = "cf";
-
-
-char** FindWordsInStr(char *InputStr, int *nWordRet)
+char com16[] = "cf";char** FindWordsInStr(char *InputStr, int *nWordRet)
 {
 	char** com;
 	
@@ -100,12 +98,16 @@ int GetCommandNumber(char *Com)
 
 char* ShowPath(vector<uint> path_vector)
 {
-	char path[255];
+	//char path[255];
+	char *path = (char*)calloc(255, sizeof(char));
+
+	for(int i=0; i<255; i++)
+		path[i] = '\0';
 
 	for(int i = 0; i < path_vector.size(); i++)
 	{
-		strcat_s(path, GetInfoById(path_vector[i])->Name);
-		strcat_s(path, "\\");
+		strcat(path, GetInfoById(path_vector[i])->Name);
+		strcat(path, "\\");
 	}
 	return  path;
 }
