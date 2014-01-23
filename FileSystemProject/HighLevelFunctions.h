@@ -1,8 +1,7 @@
 #ifndef HIGHLEVELFUNCTIONS_H
 #define HIGHLEVELFUNCTIONS_H
 
-#include "Structures.h"
-#include "Constants.h"
+#include "LowLevelFunctions.h"
 #include <vector>
 
 using namespace std;
