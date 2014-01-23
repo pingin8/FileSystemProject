@@ -30,3 +30,13 @@ void LeaveDir()
 {
 
 }
+
+void ViewCurrentDirectory()
+{
+
+}
+
+void About()
+{
+
+}
