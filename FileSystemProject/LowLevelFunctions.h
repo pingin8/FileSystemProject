@@ -33,6 +33,9 @@ void ReadFromFile(uint id, char * buffer, uint * size);
 void FileCopy(uint fileId, uint dir);
 void FileMove(uint fileId, uint dir);
 
+void FileCopyIn(char * path, uint dest_dir, uchar type);
+void FileCopyOut(uint id, char * dest_path);
+
 FileInfo * GetInfoById(uint id);
 uint GetIdByName(char name[MAX_FILENAME_LENGTH], uint dir);
 

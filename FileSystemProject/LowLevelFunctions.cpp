@@ -4,16 +4,18 @@ HANDLE file;
 uchar bitmap[8192];
 
 //test
-////
+//
 //int main() // test main
 //{
 //	InitializeFileSystem();
-//	//FormatFileSystem();
+////	FormatFileSystem();
+//	//FileCopyIn("D:\\Projects\\C++\\SPOVM\\spovm_lab_5\\Debug\\text.txt", ROOT_DIR, FILETYPE_DIR);
+//	FileCopyOut(ROOT_DIR, "output.txt");
 //	//FileCreate("filetestj345rf", FILETYPE_FILE, ROOT_DIR);
-//	char data[97] = "abcsdffewrgfhyjyfijfaijeriuhfaiuhfiajvioaernvileunriuvn3498hge eu h rhaeh ahf afh jdlfhi ehrih r";
-//	WriteToFile(ROOT_DIR, data, 97);
-//	/*char buff[11];
-//	uint count = 0;
+//	//char data[97] = "abcsdffewrgfhyjyfijfaijeriuhfaiuhfiajvioaernvileunriuvn3498hge eu h rhaeh ahf afh jdlfhi ehrih r";
+//	//WriteToFile(ROOT_DIR, data, 97);
+//	//char buff[11];
+//	/*uint count = 0;
 //	ReadFromFile(ROOT_DIR, buff, &count);*/
 //	///*for (int i = 0; i < 25; i++)
 //	//{
@@ -473,4 +475,33 @@ uint GetIdByName(char name[MAX_FILENAME_LENGTH], uint dir)
 	if (infos)
 		delete[] infos;
 	return id;
+}
+
+void FileCopyIn(char * path, uint dir, uchar type)
+{
+	HANDLE inFile = CreateFile(path, FILE_READ_DATA,
+		FILE_SHARE_READ, NULL, OPEN_ALWAYS,	FILE_ATTRIBUTE_NORMAL, NULL);
+	uint size = GetFileSize(inFile, null);
+	char * buffer = new char[size];
+	ulong lp = 0;
+	ReadFile(inFile, buffer, size, &lp, null);
+	int length = strlen(path);
+	int i = length;
+	for (; i > 0 && (path[i] != '\\' && path[i] != '/'); i--);
+	uint id = FileCreate(path + i, type, dir); 
+	WriteToFile(id, buffer, size);
+	CloseHandle(inFile);
+}
+
+void FileCopyOut(uint id, char * dest_path)
+{
+	FileInfo * info = GetInfoById(id);
+	HANDLE outFile = CreateFile(dest_path, FILE_WRITE_DATA,
+		FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	ulong lp = 0;
+	char * buffer = new char[info->Size];
+	ReadFromFile(id, buffer, (uint*)&lp);
+	WriteFile(outFile, buffer, info->Size, &lp, null);
+	CloseHandle(outFile);
+	delete info;
 }

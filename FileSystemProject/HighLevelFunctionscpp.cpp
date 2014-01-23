@@ -44,6 +44,7 @@ void ViewCurrentDirectory(vector<uint> *path_vector)
 	for(int i=0; i<count; i++)
 	{
 
+
 		cout << setw(15) << *content[i]->Name;
 		if(content[i]->Type == FILETYPE_DIR)
 			cout << setw(3) << "DIR" << endl;
@@ -55,5 +56,4 @@ void ViewCurrentDirectory(vector<uint> *path_vector)
 }
 void About()
 {
-
 }
