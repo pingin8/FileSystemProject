@@ -118,6 +118,21 @@ void WriteBitmap()
 
 uint FileCreate(char name[MAX_FILENAME_LENGTH], uchar type, uint parentId)
 {
+	uint count = 0;
+	FileInfo ** infos = GetFileList(parentId, &count);
+	bool found = false;
+	for (uint i = 0; i < count; i++)
+	{
+		if (!strcmp(name, infos[i]->Name))
+		{
+			found = true;
+		}
+		delete infos[i];
+	}
+	if (infos)
+		delete[] infos;
+	if (found)
+		return 0;
 	FileInfo * fileinfo = new FileInfo;
 	fileinfo->Size = 0;
 	fileinfo->Parent = parentId;
@@ -240,7 +255,8 @@ bool FileDelete(uint id)
 			FileDelete(infos[i]->Id);
 			delete infos[i];
 		}
-		delete[] infos;
+		if (infos)
+			delete[] infos;
 	}
 	ushort offset = info->Cluster;
 	Cluster * cluster = ReadCluster(id / 1024);
@@ -358,7 +374,8 @@ void FileCopy(uint fileId, uint dir)
 			FileCopy(infos[i]->Id, info->Id);
 			delete infos[i];
 		}
-		delete[] infos;
+		if (infos)
+			delete[] infos;
 	}
 }
 
@@ -380,7 +397,8 @@ void FileMove(uint fileId, uint dir)
 			FileMove(infos[i]->Id, info->Id);
 			delete infos[i];
 		}
-		delete[] infos;
+		if (infos)
+			delete[] infos;
 	}
 }
 
@@ -437,5 +455,22 @@ FileInfo ** GetFileList(uint dir, uint * count)
 
 uint GetIdByName(char name[MAX_FILENAME_LENGTH], uint dir)
 {
-	return 0;
+	uint count = 0;
+	FileInfo ** infos = GetFileList(dir, &count);
+	uint id = 0;
+	uint i = 0;
+	for (; i < count; i++)
+	{
+		if (!strcmp(name, infos[i]->Name))
+		{
+			id = infos[i]->Id;
+			break;
+		}
+		delete infos[i];
+	}
+	for (; i < count; i++)
+		delete infos[i];
+	if (infos)
+		delete[] infos;
+	return id;
 }
