@@ -26,80 +26,106 @@ void HELPCOM()
 	cout << "sysinfo - show system information\n";
 }
 
-int main()
+
+int main() // test main
 {
-	setlocale(LC_ALL,"Russian");
-	system("cls");
+	InitializeFileSystem();
+//	FormatFileSystem();
+	//FileCopyIn("D:\\Projects\\C++\\SPOVM\\spovm_lab_5\\Debug\\text.txt", ROOT_DIR, FILETYPE_DIR);
+	FileCopyOut(ROOT_DIR, "output.txt");
+	//FileCreate("filetestj345rf", FILETYPE_FILE, ROOT_DIR);
+	//char data[97] = "abcsdffewrgfhyjyfijfaijeriuhfaiuhfiajvioaernvileunriuvn3498hge eu h rhaeh ahf afh jdlfhi ehrih r";
+	//WriteToFile(ROOT_DIR, data, 97);
+	//char buff[11];
+	/*uint count = 0;
+	ReadFromFile(ROOT_DIR, buff, &count);*/
+	///*for (int i = 0; i < 25; i++)
+	//{
+	//	FileCreate("testfile2i", FILETYPE_FILE, ROOT_DIR);		
+	//}*/
+	//FileDelete(ROOT_DIR);
+	//FreeCluster(10);
+	CloseFileSystem();
 
-	char command[255];
-	char** words;
-	int nWords;
-	vector<uint> path;
-
-	while(1)
-	{
-		cout << "\n";	
-		cout << ShowPath(path) << ">";
-
-		cin.getline(command,255);
-		words = FindWordsInStr(command, &nWords);
-
-		switch(GetCommandNumber(words[0]))
-		{
-		case 1:{	
-					if(nWords < 2)
-						break;
-					EnterDir(&path, words[1]);		break;}
-
-		case 2:{	LeaveDir(&path);				break;}
-		case 3:{
-					if(nWords < 2)
-						break;
-					FileDeleteHigh(&path, words[1]);	break;}
-		case 4:{
-					if(nWords < 2)
-						break;
-					DirDeleteHigh(&path, words[1]);	break;}
-		case 5:{	
-					if(nWords < 2)
-						ViewCurrentDirectory(&path);		break;}
-		case 6:{	HELPCOM();						break;}
-		case 7:{		About();		break;}
-		case 8:{	
-					if(nWords < 2)
-						break;
-					FileCreateHigh(&path, words[1]); break;}
-		case 9:{	
-					if(nWords < 2)
-						break;
-					DirCreateHigh(&path, words[1]);
-													break;}
-		case 10:{	
-					if(nWords < 3)
-						break;
-					/*пустота*/;	break;}
-		case 11:{	
-					if(nWords < 2)
-						break;
-					/*пустота*/;		break;}
-		case 12:{	
-					if(nWords < 2)
-						break;
-					/*пустота*/;	break;}
-		case 13:{	
-					if(nWords < 3)
-						break;
-					if(!atoi(words[1]))
-						break;
-					if(!atoi(words[2]))
-						break;
-					/*пустота*/; break;}
-		case 14:{	/*пустота*/;				break;}
-		case 15:{	return 0;}
-		case 16:{	if(nWords < 3)
-						break;
-					/*пустота*/;
-													break;}
-		}
-	}
+	return 0;
 }
+
+
+//
+//int main()
+//{
+//	setlocale(LC_ALL,"Russian");
+//	system("cls");
+//
+//	char command[255];
+//	char** words;
+//	int nWords;
+//	vector<uint> path;
+//
+//	while(1)
+//	{
+//		cout << "\n";	
+//		cout << ShowPath(path) << ">";
+//
+//		cin.getline(command,255);
+//		words = FindWordsInStr(command, &nWords);
+//
+//		switch(GetCommandNumber(words[0]))
+//		{
+//		case 1:{	
+//					if(nWords < 2)
+//						break;
+//					EnterDir(&path, words[1]);		break;}
+//
+//		case 2:{	LeaveDir(&path);				break;}
+//		case 3:{
+//					if(nWords < 2)
+//						break;
+//					FileDeleteHigh(&path, words[1]);	break;}
+//		case 4:{
+//					if(nWords < 2)
+//						break;
+//					DirDeleteHigh(&path, words[1]);	break;}
+//		case 5:{	
+//					if(nWords < 2)
+//						ViewCurrentDirectory(&path);		break;}
+//		case 6:{	HELPCOM();						break;}
+//		case 7:{		About();		break;}
+//		case 8:{	
+//					if(nWords < 2)
+//						break;
+//					FileCreateHigh(&path, words[1]); break;}
+//		case 9:{	
+//					if(nWords < 2)
+//						break;
+//					DirCreateHigh(&path, words[1]);
+//													break;}
+//		case 10:{	
+//					if(nWords < 3)
+//						break;
+//					/*пустота*/;	break;}
+//		case 11:{	
+//					if(nWords < 2)
+//						break;
+//					/*пустота*/;		break;}
+//		case 12:{	
+//					if(nWords < 2)
+//						break;
+//					/*пустота*/;	break;}
+//		case 13:{	
+//					if(nWords < 3)
+//						break;
+//					if(!atoi(words[1]))
+//						break;
+//					if(!atoi(words[2]))
+//						break;
+//					/*пустота*/; break;}
+//		case 14:{	/*пустота*/;				break;}
+//		case 15:{	return 0;}
+//		case 16:{	if(nWords < 3)
+//						break;
+//					/*пустота*/;
+//													break;}
+//		}
+//	}
+//}
