@@ -35,7 +35,7 @@ void DirDeleteHigh(vector<uint> *path_vector, char *DirName)
 
 void EnterDir(vector<uint> *path_vector, char *DirName)
 {
-	uint dir_id = GetIdByName(DirName, *path_vector[path_vector->size]);
+	uint dir_id = GetIdByName(DirName, (*path_vector)[path_vector->size()]);
 	path_vector->push_back(dir_id);
 }
 
@@ -47,7 +47,7 @@ void LeaveDir(vector<uint> *path_vector)
 void ViewCurrentDirectory(vector<uint> *path_vector)
 {
 	uint count = 0;
-	FileInfo **content = GetFileList(*path_vector[path_vector->size], &count);
+	FileInfo **content = GetFileList((*path_vector)[path_vector->size()], &count);
 
 	for(int i=0; i<count; i++)
 	{
