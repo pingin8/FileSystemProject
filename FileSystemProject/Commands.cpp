@@ -17,9 +17,7 @@ char com12[] = "wf";
 char com13[] = "format";
 char com14[] = "sysinfo";
 char com15[] = "exit";
-char com16[] = "cf";
-
-char** FindWordsInStr(char *InputStr, int *nWordRet)
+char com16[] = "cf";char** FindWordsInStr(char *InputStr, int *nWordRet)
 {
 	char** com;
 	

@@ -4,17 +4,22 @@ HANDLE file;
 uchar bitmap[8192];
 
 //test
-//
+////
 //int main() // test main
 //{
 //	InitializeFileSystem();
 //	//FormatFileSystem();
-//	FileCreate("filetestj345rf", FILETYPE_FILE, ROOT_DIR);
-//	/*for (int i = 0; i < 25; i++)
-//	{
-//	FileCreate("testfile2i", FILETYPE_FILE, ROOT_DIR);
-//	}
-//	FileDelete(ROOT_DIR);*/
+//	//FileCreate("filetestj345rf", FILETYPE_FILE, ROOT_DIR);
+//	char data[97] = "abcsdffewrgfhyjyfijfaijeriuhfaiuhfiajvioaernvileunriuvn3498hge eu h rhaeh ahf afh jdlfhi ehrih r";
+//	WriteToFile(ROOT_DIR, data, 97);
+//	/*char buff[11];
+//	uint count = 0;
+//	ReadFromFile(ROOT_DIR, buff, &count);*/
+//	///*for (int i = 0; i < 25; i++)
+//	//{
+//	//	FileCreate("testfile2i", FILETYPE_FILE, ROOT_DIR);		
+//	//}*/
+//	//FileDelete(ROOT_DIR);
 //	//FreeCluster(10);
 //	CloseFileSystem();
 //
@@ -110,9 +115,6 @@ void WriteBitmap()
 	WriteFile(file, bitmap, 1024 * 8, &temp, NULL);
 	SetFilePointer(file, pos, NULL, FILE_BEGIN);
 }
-
-
-
 
 uint FileCreate(char name[MAX_FILENAME_LENGTH], uchar type, uint parentId)
 {
@@ -248,10 +250,11 @@ void DeleteData(ushort offset)
 		Cluster * cluster = ReadCluster(offset);
 		cluster->Size = 0;
 		offset = cluster->Next;
+		cluster->Prev = 0;
 		cluster->Next = 0;
 		FreeCluster(cluster->Offset);
-		delete cluster;
 		WriteCluster(cluster);
+		delete cluster;		
 	}
 }
 
@@ -266,6 +269,7 @@ void WriteToFile(uint id, char * data, uint size)
 	fileinfo->Size = size;
 	Cluster * cluster = ReadCluster(fileinfo->Cluster);
 	uint writted = 0;
+	WriteInfo(fileinfo);
 	delete fileinfo;
 	while(size > 0)
 	{
@@ -291,7 +295,25 @@ void WriteToFile(uint id, char * data, uint size)
 	}
 }
 
-void ReadFromFile(uint id, char * buffer){}
+void ReadFromFile(uint id, char * buffer, uint * size)
+{
+	FileInfo * info = GetInfoById(id);
+	ushort offset = info->Cluster;
+	*size = info->Size;
+	delete info;
+	Cluster * cluster = ReadCluster(offset);
+	uint writed = 0;
+	while (writed < (*size) )
+	{
+		memmove(buffer + writed, cluster->Data, cluster->Size);
+		writed += cluster->Size;
+		if (cluster->Next)
+		{
+			cluster = ReadNextCluster(cluster);
+		}
+	}
+}
+
 void FileCopy(uint fileId, uint dir){}
 void FileMove(uint fileId, uint dir){}
 

@@ -26,7 +26,7 @@ bool FileDelete(uint id);
 void DeleteData(ushort offset);
 
 void WriteToFile(uint id, char * data, uint size);
-void ReadFromFile(uint id, char * buffer);
+void ReadFromFile(uint id, char * buffer, uint * size);
 void FileCopy(uint fileId, uint dir);
 void FileMove(uint fileId, uint dir);
 
